@@ -125,6 +125,7 @@ class subcommand(object):
         self.lambda_function = lambda: func(*args)
         self.pid = None
         self.returncode = None
+        self.result = None
 
 
     def __str__(self):
@@ -261,3 +262,12 @@ class subcommand(object):
             print "timeout after %ds" % timeout
             print
             return None
+
+    def fork_getresult(self, timeout=None):
+        if not self.result:
+            try:
+                self.fork_waitfor(timeout=timeout)
+            except:
+                print "Some error happened"
+            self.result = cPickle.load(self.result_pickle)
+        return self.result
